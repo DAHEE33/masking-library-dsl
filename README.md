@@ -1,3 +1,6 @@
+## 📄 라이선스
+이 프로젝트는 [Apache-2.0](LICENSE) 라이선스 하에 배포됩니다.
+
 ## 📌 개요
 
 **Masking Pipeline DSL**은 Java 애플리케이션에서 다루는 민감 데이터를  
@@ -80,3 +83,11 @@
   단위 테스트 전용 디렉터리. JUnit5 기반으로 핵심 로직의 정확성을 검증.
 
 ---
+
+## 🛠️ 설치
+
+### Gradle
+```groovy
+implementation 'com.masking:masking-pipeline-dsl:0.1.0'
+
+
