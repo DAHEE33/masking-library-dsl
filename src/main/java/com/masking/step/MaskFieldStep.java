@@ -7,9 +7,11 @@ import java.util.Map;
  */
 public class MaskFieldStep implements Step {
 
+    /**처리할 map의 key*/
     private final String fieldName;
     private final int prefixLength;
     private final int suffixLength;
+    /**마스킹에 사용할 문자*/
     private final char maskChar;
 
     private MaskFieldStep(String fieldName, int prefixLength, int suffixLength, char maskChar) {
