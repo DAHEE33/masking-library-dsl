@@ -1,6 +1,6 @@
 package com.masking.action;
 
-import com.masking.strategy.MaskStrategy;
+import com.masking.strategy.mask.MaskStrategy;
 
 import java.util.Map;
 

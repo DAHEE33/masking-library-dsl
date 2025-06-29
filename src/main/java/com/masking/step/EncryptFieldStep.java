@@ -1,6 +1,6 @@
 package com.masking.step;
 
-import com.masking.strategy.EncryptionStrategy;
+import com.masking.strategy.encrypt.EncryptionStrategy;
 import java.util.Base64;
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 package com.masking.aciton;
 
 import com.masking.action.MaskAction;
-import com.masking.strategy.PartialMaskStrategy;
+import com.masking.strategy.mask.PartialMaskStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

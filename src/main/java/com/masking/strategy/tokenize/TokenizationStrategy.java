@@ -1,4 +1,4 @@
-package com.masking.strategy;
+package com.masking.strategy.tokenize;
 
 /**
  * 값 → 토큰 문자열로 변환하는 전략 패턴 인터페이스

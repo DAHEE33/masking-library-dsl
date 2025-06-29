@@ -1,4 +1,4 @@
-package com.masking.strategy;
+package com.masking.strategy.tokenize;
 
 
 import java.security.MessageDigest;

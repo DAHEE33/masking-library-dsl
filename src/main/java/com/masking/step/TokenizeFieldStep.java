@@ -1,6 +1,6 @@
 package com.masking.step;
 
-import com.masking.strategy.TokenizationStrategy;
+import com.masking.strategy.tokenize.TokenizationStrategy;
 
 import java.util.Map;
 

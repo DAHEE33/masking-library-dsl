@@ -1,4 +1,4 @@
-package com.masking.strategy;
+package com.masking.strategy.mask;
 
 public enum CharClass {
     LETTER, DIGIT, HANGUL, SPACE, OTHER;

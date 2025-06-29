@@ -1,9 +1,9 @@
 package com.masking.aciton;
 
 import com.masking.action.TokenizeAction;
-import com.masking.strategy.UUIDTokenizationStrategy;
-import com.masking.strategy.HashTokenizationStrategy;
-import com.masking.strategy.NumericTokenizationStrategy;
+import com.masking.strategy.tokenize.UUIDTokenizationStrategy;
+import com.masking.strategy.tokenize.HashTokenizationStrategy;
+import com.masking.strategy.tokenize.NumericTokenizationStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

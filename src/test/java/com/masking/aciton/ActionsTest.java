@@ -2,8 +2,8 @@ package com.masking.aciton;
 
 import com.masking.action.Actions;
 import com.masking.action.MaskAction;
-import com.masking.strategy.PartialMaskStrategy;
-import com.masking.strategy.RegexMaskStrategy;
+import com.masking.strategy.mask.PartialMaskStrategy;
+import com.masking.strategy.mask.RegexMaskStrategy;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
