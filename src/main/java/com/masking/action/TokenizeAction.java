@@ -4,7 +4,7 @@ import com.masking.strategy.TokenizationStrategy;
 
 import java.util.Map;
 
-public class TokenizeAction {
+public class TokenizeAction implements Action {
     private final String field;
     private final TokenizationStrategy strategy;
 
