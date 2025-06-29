@@ -45,6 +45,12 @@ public class MaskFieldStep implements Step {
     }
 
     private String maskCharRepeat(int count) {
-        return String.valueOf(maskChar).repeat(Math.max(0, count));
+        if (count <= 0) return "";
+        StringBuilder sb = new StringBuilder(count);
+        for (int i = 0; i < count; i++) {
+            sb.append(maskChar);
+        }
+        return sb.toString();
     }
+
 }
