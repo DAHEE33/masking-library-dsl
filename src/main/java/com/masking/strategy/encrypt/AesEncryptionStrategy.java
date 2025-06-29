@@ -1,38 +1,30 @@
 package com.masking.strategy.encrypt;
 
 import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
 public class AesEncryptionStrategy implements EncryptionStrategy {
-    private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
-
     private final SecretKeySpec keySpec;
-    private final IvParameterSpec ivSpec;
+    private static final String ALGORITHM = "AES/ECB/PKCS5Padding";
 
-    private AesEncryptionStrategy(byte[] key, byte[] iv) {
+    private AesEncryptionStrategy(byte[] key) {
         this.keySpec = new SecretKeySpec(key, "AES");
-        this.ivSpec  = new IvParameterSpec(iv);
     }
 
-    public static AesEncryptionStrategy of(String base64Key, String base64Iv) {
-        byte[] key = Base64.getDecoder().decode(base64Key);
-        byte[] iv  = Base64.getDecoder().decode(base64Iv);
-        return new AesEncryptionStrategy(key, iv);
+    public static AesEncryptionStrategy of(byte[] key) {
+        return new AesEncryptionStrategy(key);
     }
 
     @Override
-    public byte[] encrypt(byte[] plain) throws Exception {
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
-        return cipher.doFinal(plain);
-    }
-
-    @Override
-    public byte[] decrypt(byte[] cipherText) throws Exception {
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
-        return cipher.doFinal(cipherText);
+    public String encrypt(String input) {
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+            byte[] encrypted = cipher.doFinal(input.getBytes("UTF-8"));
+            return Base64.getEncoder().encodeToString(encrypted);
+        } catch (Exception e) {
+            throw new RuntimeException("AES encryption failed", e);
+        }
     }
 }
