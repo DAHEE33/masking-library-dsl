@@ -22,6 +22,14 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+
+    // H2 데이터베이스 (in-memory)
+    implementation("com.h2database:h2:2.1.214")
+    // 간단한 DataSource 풀 (선택)
+    implementation("com.zaxxer:HikariCP:5.0.1")
+
+    // JavaMail (이메일 전송)
+    implementation("com.sun.mail:javax.mail:1.6.2")
 }
 
 tasks.test {

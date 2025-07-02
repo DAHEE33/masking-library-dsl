@@ -6,6 +6,9 @@ import javax.crypto.SecretKey;
 import java.security.*;
 import java.util.Base64;
 
+/**
+ *  암호화를 위한 메서드
+ */
 public class CryptoUtil {
 
     /**
@@ -13,10 +16,10 @@ public class CryptoUtil {
      */
     public static String generateAesKeyBase64() {
         try {
-            KeyGenerator kg = KeyGenerator.getInstance("AES");
-            kg.init(128);
-            SecretKey key = kg.generateKey();
-            return Base64.getEncoder().encodeToString(key.getEncoded());
+            KeyGenerator kg = KeyGenerator.getInstance("AES"); // 키 생성기 인스턴스 획득
+            kg.init(128);                                  // 128비트 키 크기 설정
+            SecretKey key = kg.generateKey();              // 키 생성
+            return Base64.getEncoder().encodeToString(key.getEncoded()); // Base64 인코딩
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("AES 키 생성 실패", e);
         }

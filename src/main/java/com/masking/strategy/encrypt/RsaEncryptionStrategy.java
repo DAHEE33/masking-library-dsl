@@ -20,10 +20,10 @@ public class RsaEncryptionStrategy implements EncryptionStrategy {
     @Override
     public String encrypt(String input) {
         try {
-            Cipher cipher = Cipher.getInstance(ALGORITHM);
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[] encrypted = cipher.doFinal(input.getBytes("UTF-8"));
-            return Base64.getEncoder().encodeToString(encrypted);
+            Cipher cipher = Cipher.getInstance(ALGORITHM);     // Cipher 객체 획득
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);      // 암호화 모드, 공개키 설정
+            byte[] encrypted = cipher.doFinal(input.getBytes("UTF-8")); // 암호화 수행
+            return Base64.getEncoder().encodeToString(encrypted);        // Base64로 결과 인코딩
         } catch (Exception e) {
             throw new RuntimeException("RSA 암호화 실패", e);
         }
