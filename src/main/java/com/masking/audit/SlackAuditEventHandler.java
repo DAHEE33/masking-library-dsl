@@ -28,7 +28,7 @@ public class SlackAuditEventHandler implements AuditEventHandler {
      */
     public SlackAuditEventHandler() throws IOException {
         TemplateConfig.init();
-        this.tpl = TemplateConfig.get().slack;
+        this.tpl = TemplateConfig.getSlackConfig();
     }
 
     @Override

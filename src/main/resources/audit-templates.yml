@@ -1,5 +1,5 @@
 slack:
-  webhook_url: "https://hooks.slack.com/services/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"
+  webhook_url: "https://hooks.slack.com/services/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"
   message: |
     🔔 *${field}* 필드가 변경되었습니다.
     • 이전값: `${before}`
@@ -7,3 +7,23 @@ slack:
   channel: "#새-채널"
   username: "masking-bot"
   icon_emoji: ":bell:"
+
+
+#진짜 SMTP 서버 쓸 때
+#email:
+#  smtpHost:   "smtp.gmail.com"
+#  smtpPort:   587
+#  from:       "alerts@mycompany.com"
+#  to:         "ops@mycompany.com"
+#  username:   "${EMAIL_USER}"      # 환경변수 혹은 CI/CD 시크릿으로 치환
+#  password:   "${EMAIL_PASSWORD}"
+#  starttls:   true
+
+email:
+  smtpHost:  "localhost"
+  smtpPort:  3025
+  from:      "from@test.com"
+  to:        "to@test.com"
+  username:  ""       # 인증 없이
+  password:  ""
+  starttls:  false

@@ -3,6 +3,8 @@ package com.masking.aciton;
 import com.masking.action.AuditAction;
 import com.masking.audit.AuditEventHandler;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
@@ -19,7 +21,7 @@ class AuditActionTest {
     }
 
     @Test
-    void auditAction_shouldInvokeHandlerWithBeforeAndNullAfter() {
+    void auditAction_shouldInvokeHandlerWithBeforeAndNullAfter() throws IOException {
         TestHandler handler = new TestHandler();
         AuditAction action = AuditAction.of("email", handler);
 

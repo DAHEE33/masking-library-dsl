@@ -33,6 +33,7 @@ dependencies {
     implementation("com.sun.mail:javax.mail:1.6.2")
 
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
+    implementation("com.icegreen:greenmail:1.6.3")
     testImplementation("com.icegreen:greenmail:1.6.3")
 
 }

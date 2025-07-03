@@ -9,6 +9,7 @@ import com.masking.strategy.tokenize.UUIDTokenizationStrategy;
 import com.masking.util.CryptoUtil;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Base64;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MainIntegrationTest {
     @Test
-    void fullPipeline_shouldMaskTokenizeEncryptAndAudit() {
+    void fullPipeline_shouldMaskTokenizeEncryptAndAudit() throws IOException {
         Map<String,String> record = new HashMap<>();
         record.put("email", "dahee@example.com");
         record.put("username", "maskingUser");
