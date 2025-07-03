@@ -83,9 +83,24 @@ java {
   targetCompatibility = JavaVersion.VERSION_1_8
 }
 dependencies {
-  implementation("org.slf4j:slf4j-api:1.7.36")
-  implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
-  testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+  // SLF4J + Jackson + JUnit
+    implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("org.slf4j:slf4j-simple:1.7.36")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+
+    // H2 데이터베이스 (in-memory)
+    implementation("com.h2database:h2:2.1.214")
+    // 간단한 DataSource 풀 (선택)
+    implementation("com.zaxxer:HikariCP:5.0.1")
+
+    // JavaMail (이메일 전송)
+    implementation("com.sun.mail:javax.mail:1.6.2")
+
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
+    implementation("com.icegreen:greenmail:1.6.3")
+    testImplementation("com.icegreen:greenmail:1.6.3")
 }
 ```
 
@@ -116,6 +131,13 @@ Actions.of(
   EncryptAction.of("ssn", aesStrategy)
 ).apply(record);
 ```
+
+---
+## 6. 추가 할 리스트
+1. **운영 SMTP 환경** 구성 및 테스트  
+2. **이메일, DB, Slack** 중 선택적 감사 알림 지원  
+3. **Step/Action 확장 로직** (Jackson 모듈, Kafka 이벤트 핸들러 벤치마크)
+
 
 ---
 
