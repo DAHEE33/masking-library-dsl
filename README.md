@@ -13,12 +13,14 @@ Action 기반으로 **필요한 기능만 선택하여** 사용할 수 있는 **
 
 ---
 
-## 2. 사용 예시
+## 2. 빠른 시작 & 사용 예시
 
 ### 2.1 단일 Action 호출
 ```java
-// 마스킹만 수행
-Action mask = MaskAction.of("email", RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*'));
+Action mask = MaskAction.of(
+  "email",
+  RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*')
+);
 mask.apply(record);
 ```
 
@@ -31,31 +33,41 @@ Actions actions = Actions.of(
 actions.apply(record);
 ```
 
-> **Q:** `MaskAction` 하나만 선택해도 되나요?  
-> **A:** 네, `MaskAction` 인스턴스 하나로 **마스킹만** 실행 가능합니다.
+### 2.3 파이프라인 빌더(Pipeline Builder)
+```java
+MaskPipeline pipeline = MaskPipelineBuilder.newBuilder()
+  .audit("email", slackHandler)
+  .mask("email", RegexMaskStrategy.of(pattern, '*'))
+  .tokenize("username", UUIDTokenizationStrategy.of())
+  .encryptAes("ssn", aesKey)
+  .build();
+pipeline.apply(record);
+```
+
+> **유연성**: 원하는 Action/Step만 순서대로 조립해 실행 가능
 
 ---
 
 ## 3. 주요 보호 전략
 
 ### 3.1 마스킹(Mask)
-- **PartialMaskStrategy**: 앞/뒤 일정 글자만 남기고 마스킹  
-- **RegexMaskStrategy**: 정규표현식 기반 세밀 마스킹  
+- **PartialMaskStrategy**: 앞/뒤 N글자 제외 마스킹  
+- **RegexMaskStrategy**: 패턴 기반 세밀 마스킹  
 - **CharClassMaskStrategy**: 문자 클래스별(영문·숫자·한글·공백) 마스킹
 
 ```java
-// 예: 이메일 로컬 파트 첫 글자 제외 모두 마스킹
+// 이메일 로컬 파트 첫 글자 제외 마스킹
 Action mask = MaskAction.of(
   "email",
   RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*')
 );
 ```
 
-| 전략       | 설명                            | 예시 코드                                                         |
-|-----------|---------------------------------|------------------------------------------------------------------|
-| Partial   | 앞/뒤 N글자 제외 마스킹          | `PartialMaskStrategy.of(2,2,'*')`                                 |
-| Regex     | 패턴 기반 마스킹                  | `RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*')`               |
-| CharClass | 문자 종류별(숫자·영문 등) 마스킹  | `CharClassMaskStrategy.of(EnumSet.of(CharClass.LETTER), '*')`   |
+| 전략       | 설명                         | 예시 코드                                                        |
+|-----------|-----------------------------|-----------------------------------------------------------------|
+| Partial   | 앞/뒤 N글자 제외 마스킹       | `PartialMaskStrategy.of(2,2,'*')`                                |
+| Regex     | 패턴 기반 마스킹              | `RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*')`            |
+| CharClass | 클래스별(문자·숫자·한글 등) 마스킹 | `CharClassMaskStrategy.of(EnumSet.of(CharClass.LETTER), '*')`|
 
 ### 3.2 토큰화(Tokenize)
 - **UUIDTokenizationStrategy**: UUID 치환  
@@ -67,8 +79,25 @@ Action mask = MaskAction.of(
 - **RSA**: 공개키 암호화 + Base64
 
 ### 3.4 감사로그(Audit)
-- **AuditEventHandler**: 콘솔, DB, Slack, Email 등  
-- **AuditAction**: `before`·`after` 이벤트 호출
+- **AuditEventHandler**: 콘솔, DB, Slack, Email 등 다양한 핸들러 제공
+- **TemplateConfig & YAML**: `audit-templates.yml`을 통해 Slack/Webhook, Email, DB 설정을 외부화
+- **AuditAction**: `before`·`after` 값과 필드명을 `handle(field, before, after)`로 전달
+
+```yaml
+# audit-templates.yml 예시
+slack:
+  webhook_url: "https://hooks.slack.com/..."
+  channel:     "#alerts"
+  message:     "🔔 *${field}* 변경: 이전=${before}, 이후=${after}"
+email:
+  smtpHost:  "smtp.gmail.com"
+  smtpPort:  587
+  from:      "alerts@mycompany.com"
+  to:        "ops@mycompany.com"
+  username:  "${EMAIL_USER}"
+  password:  "${EMAIL_PASSWORD}"
+  starttls:  true
+```
 
 ---
 
@@ -98,8 +127,8 @@ dependencies {
     // JavaMail (이메일 전송)
     implementation("com.sun.mail:javax.mail:1.6.2")
 
-    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
-    implementation("com.icegreen:greenmail:1.6.3")
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0") 
+    implementation("com.icegreen:greenmail:1.6.3") // 데모용 GreenMail
     testImplementation("com.icegreen:greenmail:1.6.3")
 }
 ```
@@ -107,33 +136,20 @@ dependencies {
 ```
 com.masking
 ├─ action       # Action, MaskAction, TokenizeAction, EncryptAction, Actions
-├─ strategy     # MaskStrategy 등 다양한 전략 인터페이스/구현
-├─ audit        # AuditAction, AuditEventHandler 등
+├─ strategy     # MaskStrategy, TokenizationStrategy 등
+│   ├─ encrypt  # AES, RSA 구현체
+│   ├─ mask     # Partial, Regex, CharClass 전략
+│   └─ tokenize # UUID, Hash, Numeric 전략
+├─ pipeline     # MaskPipeline, MaskPipelineBuilder
+├─ audit        # AuditAction, AuditEventHandler, handlers (Slack, Email, DB)
+├─ config       # AuditTemplates, EmailConfig, TemplateConfig, YamlLoader
+├─ demo         # Demo 애플리케이션
 └─ util         # CryptoUtil, YamlLoader
+
 ```
 
 ---
-
-## 5. 빠른 시작
-```groovy
-dependencies {
-  implementation 'com.masking:masking-library-dsl:0.1.0'
-}
-```
-
-```java
-// 마스킹만
-MaskAction.of("email", PartialMaskStrategy.of(2,2,'*')).apply(record);
-
-// 마스킹+암호화
-Actions.of(
-  MaskAction.of("email", policy),
-  EncryptAction.of("ssn", aesStrategy)
-).apply(record);
-```
-
----
-## 6. 추가 할 리스트
+## 5. 추가 할 리스트
 1. **운영 SMTP 환경** 구성 및 테스트  
 2. **이메일, DB, Slack** 중 선택적 감사 알림 지원  
 3. **Step/Action 확장 로직** (Jackson 모듈, Kafka 이벤트 핸들러 벤치마크)
