@@ -17,8 +17,9 @@ repositories {
 }
 
 dependencies {
-    // 최소 의존성: SLF4J + Jackson + JUnit
+    // SLF4J + Jackson + JUnit
     implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
@@ -30,6 +31,10 @@ dependencies {
 
     // JavaMail (이메일 전송)
     implementation("com.sun.mail:javax.mail:1.6.2")
+
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
+    testImplementation("com.icegreen:greenmail:1.6.3")
+
 }
 
 tasks.test {

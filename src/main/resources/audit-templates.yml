@@ -1,0 +1,9 @@
+slack:
+  webhook_url: "https://hooks.slack.com/services/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"
+  message: |
+    🔔 *${field}* 필드가 변경되었습니다.
+    • 이전값: `${before}`
+    • 이후값: `${after}`
+  channel: "#새-채널"
+  username: "masking-bot"
+  icon_emoji: ":bell:"

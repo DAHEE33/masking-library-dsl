@@ -1,5 +1,7 @@
 package com.masking.audit;
 
+import java.io.IOException;
+
 public interface AuditEventHandler {
     /**
      * 필드별 적용 전후 값을 전달받아 처리
@@ -7,5 +9,5 @@ public interface AuditEventHandler {
      * @param before  액션 적용 전 값
      * @param after   액션 적용 후 값
      */
-    void handle(String field, String before, String after);
+    void handle(String field, String before, String after) throws IOException;
 }

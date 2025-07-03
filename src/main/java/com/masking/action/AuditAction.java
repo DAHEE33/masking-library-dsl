@@ -2,6 +2,7 @@ package com.masking.action;
 
 import com.masking.audit.AuditEventHandler;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class AuditAction implements Action {
@@ -18,7 +19,7 @@ public class AuditAction implements Action {
     }
 
     @Override
-    public void apply(Map<String, String> record) {
+    public void apply(Map<String, String> record) throws IOException {
         String before = record.get(field);
         // 다음 액션이 바뀐 값을 넣어줄 수 있도록, 미리 이벤트 호출
         handler.handle(field, before, null);

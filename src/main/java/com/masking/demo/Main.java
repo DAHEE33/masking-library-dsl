@@ -8,11 +8,12 @@ import com.masking.strategy.mask.RegexMaskStrategy;
 import com.masking.strategy.tokenize.UUIDTokenizationStrategy;
 import com.masking.util.CryptoUtil;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // 샘플 레코드 준비
         Map<String, String> record = new HashMap<>();
         record.put("email",    "dahee@example.com");
