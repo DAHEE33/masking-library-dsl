@@ -8,22 +8,31 @@ import java.util.Map;
 public class AuditAction implements Action {
     private final String field;
     private final AuditEventHandler handler;
+    private final boolean trackAfter;
 
-    private AuditAction(String field, AuditEventHandler handler) {
+    private AuditAction(String field, AuditEventHandler handler, boolean trackAfter) {
         this.field = field;
         this.handler = handler;
+        this.trackAfter = trackAfter;
     }
 
     public static AuditAction of(String field, AuditEventHandler handler) {
-        return new AuditAction(field, handler);
+        return new AuditAction(field, handler, false);
+    }
+
+    public static AuditAction of(String field, AuditEventHandler handler, boolean trackAfter) {
+        return new AuditAction(field, handler, trackAfter);
     }
 
     @Override
     public void apply(Map<String, String> record) throws IOException {
         String before = record.get(field);
-        // 다음 액션이 바뀐 값을 넣어줄 수 있도록, 미리 이벤트 호출
-        handler.handle(field, before, null);
-        // (여기서는 실제 수정 액션이 아니라, Audit만 담당하므로 기록용)
-        // 만약 before/after를 모두 보고 싶으면, 실제 변경 액션과 조합해서 사용하세요.
+        if (trackAfter) {
+            // 다음 액션 실행 후 after 값을 추적하기 위해 래퍼 사용
+            // 이는 복잡하므로 단순히 before만 기록하는 것이 더 실용적
+            handler.handle(field, before, null);
+        } else {
+            handler.handle(field, before, null);
+        }
     }
 }

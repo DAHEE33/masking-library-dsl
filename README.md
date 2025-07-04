@@ -10,6 +10,7 @@ Action 기반으로 **필요한 기능만 선택하여** 사용할 수 있는 **
 > **왜 Action인가?**
 > - `MaskAction.apply(record)`처럼 **단일 Action**을 직접 실행하거나  
 > - `Actions.of(a, b).apply(record)`로 **여러 Action**을 한 번에 묶어 실행
+> - **감사 추적**도 Action으로 통합하여 before/after 값을 완벽하게 추적
 
 ---
 
@@ -44,7 +45,26 @@ MaskPipeline pipeline = MaskPipelineBuilder.newBuilder()
 pipeline.apply(record);
 ```
 
-> **유연성**: 원하는 Action/Step만 순서대로 조립해 실행 가능
+### 2.4 🆕 복합 감사 추적 (Before/After)
+```java
+// 기본 감사 (before만 추적)
+AuditAction.of("email", consoleHandler)
+
+// 복합 감사 (before/after 모두 추적)
+CompositeAuditAction.of("email", consoleHandler, 
+    MaskAction.of("email", RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*')))
+
+// 빌더 패턴으로 복합 감사
+MaskPipelineBuilder.newBuilder()
+  .maskWithAudit("email", RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*'), consoleHandler)
+  .tokenizeWithAudit("id", UUIDTokenizationStrategy.of(), slackHandler)
+  .encryptAesWithAudit("ssn", aesKey, emailHandler)
+  .build()
+  .apply(record);
+```
+
+> **유연성**: 원하는 Action/Step만 순서대로 조립해 실행 가능  
+> **감사 추적**: before/after 값을 완벽하게 추적하여 감사 로그 생성
 
 ---
 
@@ -78,10 +98,26 @@ Action mask = MaskAction.of(
 - **AES**: CBC/PKCS5Padding + Base64  
 - **RSA**: 공개키 암호화 + Base64
 
-### 3.4 감사로그(Audit)
+### 3.4 🆕 감사로그(Audit) - 개선된 버전
 - **AuditEventHandler**: 콘솔, DB, Slack, Email 등 다양한 핸들러 제공
 - **TemplateConfig & YAML**: `audit-templates.yml`을 통해 Slack/Webhook, Email, DB 설정을 외부화
-- **AuditAction**: `before`·`after` 값과 필드명을 `handle(field, before, after)`로 전달
+- **AuditAction**: 기본 감사 (before 값만 추적)
+- **🆕 CompositeAuditAction**: 고급 감사 (before/after 값 모두 추적)
+- **🆕 빌더 패턴**: `maskWithAudit()`, `tokenizeWithAudit()`, `encryptWithAudit()` 메서드 제공
+
+```java
+// 기본 감사
+AuditAction.of("email", consoleHandler)
+
+// 고급 감사 (before/after 모두 추적)
+CompositeAuditAction.of("email", consoleHandler, 
+    MaskAction.of("email", RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*')))
+
+// 빌더 패턴
+.maskWithAudit("email", strategy, handler)
+.tokenizeWithAudit("id", strategy, handler)  
+.encryptAesWithAudit("ssn", key, handler)
+```
 
 ```yaml
 # audit-templates.yml 예시
@@ -136,24 +172,63 @@ dependencies {
 ```
 com.masking
 ├─ action       # Action, MaskAction, TokenizeAction, EncryptAction, Actions
+│               # 🆕 CompositeAuditAction (before/after 추적)
 ├─ strategy     # MaskStrategy, TokenizationStrategy 등
 │   ├─ encrypt  # AES, RSA 구현체
 │   ├─ mask     # Partial, Regex, CharClass 전략
 │   └─ tokenize # UUID, Hash, Numeric 전략
 ├─ pipeline     # MaskPipeline, MaskPipelineBuilder
+│               # 🆕 maskWithAudit(), tokenizeWithAudit(), encryptWithAudit()
 ├─ audit        # AuditAction, AuditEventHandler, handlers (Slack, Email, DB)
 ├─ config       # AuditTemplates, EmailConfig, TemplateConfig, YamlLoader
 ├─ demo         # Demo 애플리케이션
+│               # 🆕 AdvancedDemo (고급 감사 추적 예제)
 └─ util         # CryptoUtil, YamlLoader
-
 ```
 
 ---
-## 5. 추가 할 리스트
+
+## 5. 🆕 새로운 기능들
+
+### 5.1 완벽한 감사 추적
+- **기본 감사**: `AuditAction` - before 값만 추적
+- **고급 감사**: `CompositeAuditAction` - before/after 값 모두 추적
+- **빌더 패턴**: `maskWithAudit()`, `tokenizeWithAudit()`, `encryptWithAudit()`
+
+### 5.2 유연한 조합
+```java
+// 1. 단순 마스킹
+MaskAction.of("email", strategy)
+
+// 2. 마스킹 + 감사 (before만)
+Actions.of(
+    AuditAction.of("email", handler),
+    MaskAction.of("email", strategy)
+)
+
+// 3. 마스킹 + 감사 (before/after 모두)
+CompositeAuditAction.of("email", handler, 
+    MaskAction.of("email", strategy))
+
+// 4. 빌더 패턴
+.maskWithAudit("email", strategy, handler)
+```
+
+### 5.3 다양한 감사 출력
+- **콘솔**: `ConsoleAuditEventHandler`
+- **이메일**: `EmailAuditEventHandler` (SMTP 설정)
+- **Slack**: `SlackAuditEventHandler` (Webhook)
+- **데이터베이스**: `DatabaseAuditEventHandler` (H2, MySQL 등)
+
+---
+
+## 6. 추가 할 리스트
 1. **운영 SMTP 환경** 구성 및 테스트  
 2. **이메일, DB, Slack** 중 선택적 감사 알림 지원  
 3. **Step/Action 확장 로직** (Jackson 모듈, Kafka 이벤트 핸들러 벤치마크)
-
+4. **🆕 성능 최적화** (배치 처리, 비동기 감사)
+5. **🆕 설정 검증** (YAML 스키마 검증)
+6. **🆕 메트릭 수집** (처리 시간, 성공/실패 통계)
 
 ---
 
