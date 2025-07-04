@@ -45,23 +45,32 @@ MaskPipeline pipeline = MaskPipelineBuilder.newBuilder()
 pipeline.apply(record);
 ```
 
-### 2.4 🆕 복합 감사 추적 (Before/After)
+### 2.4 복합 감사 추적 (Before/After)
+- 단일 액션 실행 전후의 값을 모두 감사 로그로 남길 수 있습니다.
+
 ```java
-// 기본 감사 (before만 추적)
-AuditAction.of("email", consoleHandler)
+// 예시: 이메일 마스킹 전후 값 모두 감사
+CompositeAuditAction.of("email", handler, MaskAction.of("email", RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*')))
+```
 
-// 복합 감사 (before/after 모두 추적)
-CompositeAuditAction.of("email", consoleHandler, 
-    MaskAction.of("email", RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*')))
-
-// 빌더 패턴으로 복합 감사
+- 빌더 패턴으로도 사용 가능:
+```java
 MaskPipelineBuilder.newBuilder()
-  .maskWithAudit("email", RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*'), consoleHandler)
-  .tokenizeWithAudit("id", UUIDTokenizationStrategy.of(), slackHandler)
-  .encryptAesWithAudit("ssn", aesKey, emailHandler)
+  .maskWithAudit("email", RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*'), handler)
+  .tokenizeWithAudit("id", UUIDTokenizationStrategy.of(), handler)
+  .encryptAesWithAudit("ssn", aesKey, handler)
   .build()
   .apply(record);
 ```
+
+#### CompositeAuditAction의 동작
+- 지정한 필드의 값을 액션 실행 전(before)과 실행 후(after) 모두 감사 핸들러에 전달합니다.
+- 예를 들어, 마스킹 전후의 값을 모두 로그로 남길 수 있습니다.
+- 다양한 감사 핸들러(Console, Email, Slack, DB 등)와 조합하여 사용할 수 있습니다.
+
+### 2.5 고급 예제 및 실무 활용
+- `AdvancedDemo`와 `AuditExample`을 참고하면, 실무에서 감사 추적이 어떻게 활용되는지 다양한 시나리오를 볼 수 있습니다.
+- 예시: 개인정보보호법 준수, 보안 사고 대응, 데이터 품질 관리, DB 감사 로그 저장 등
 
 > **유연성**: 원하는 Action/Step만 순서대로 조립해 실행 가능  
 > **감사 추적**: before/after 값을 완벽하게 추적하여 감사 로그 생성
