@@ -1,5 +1,5 @@
 slack:
-  webhook_url: "https://hooks.slack.com/services/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"
+  webhook_url: "https://hooks.slack.com/services/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"
   message: |
     🔔 *${field}* 필드가 변경되었습니다.
     • 이전값: `${before}`
@@ -8,17 +8,7 @@ slack:
   username: "masking-bot"
   icon_emoji: ":bell:"
 
-
-#진짜 SMTP 서버 쓸 때
-#email:
-#  smtpHost:   "smtp.gmail.com"
-#  smtpPort:   587
-#  from:       "alerts@mycompany.com"
-#  to:         "ops@mycompany.com"
-#  username:   "${EMAIL_USER}"      # 환경변수 혹은 CI/CD 시크릿으로 치환
-#  password:   "${EMAIL_PASSWORD}"
-#  starttls:   true
-
+# 개발/테스트 환경용 (GreenMail)
 email:
   smtpHost:  "localhost"
   smtpPort:  3025
@@ -27,3 +17,32 @@ email:
   username:  ""       # 인증 없이
   password:  ""
   starttls:  false
+
+# 운영 환경용 - Gmail 예시 (환경변수 사용)
+# 실제 사용 시 아래 주석을 해제하고 환경변수 설정
+#email:
+#  smtpHost:   "smtp.gmail.com"
+#  smtpPort:   587
+#  from:       "${EMAIL_FROM}"        # 환경변수: alerts@mycompany.com
+#  to:         "${EMAIL_TO}"          # 환경변수: ops@mycompany.com
+#  username:   "${EMAIL_USERNAME}"    # 환경변수: alerts@mycompany.com
+#  password:   "${EMAIL_PASSWORD}"    # 환경변수: 앱 비밀번호
+#  starttls:   true
+
+# 운영 환경용 - Naver 예시 (환경변수 사용)
+#email:
+#  smtpHost:   "smtp.naver.com"
+#  smtpPort:   587
+#  from:       "${EMAIL_FROM}"        # 환경변수: alerts@mycompany.com
+#  to:         "${EMAIL_TO}"          # 환경변수: ops@mycompany.com
+#  username:   "${EMAIL_USERNAME}"    # 환경변수: 네이버 아이디
+#  password:   "${EMAIL_PASSWORD}"    # 환경변수: 네이버 비밀번호
+#  starttls:   true
+
+# 데이터베이스 감사 설정
+database:
+  url: "jdbc:h2:mem:auditdb"
+  username: "sa"
+  password: ""
+  table: "audit_logs"
+  driver: "org.h2.Driver"

@@ -24,4 +24,12 @@ public class EncryptAction implements Action {
             record.put(field, strategy.encrypt(value));
         }
     }
+    
+    public String getField() {
+        return field;
+    }
+    
+    public EncryptionStrategy getStrategy() {
+        return strategy;
+    }
 }

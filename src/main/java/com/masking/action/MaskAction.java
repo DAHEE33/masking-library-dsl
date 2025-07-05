@@ -28,4 +28,12 @@ public class MaskAction implements Action{
             record.put(field, strategy.mask(value));
         }
     }
+    
+    public String getField() {
+        return field;
+    }
+    
+    public MaskStrategy getStrategy() {
+        return strategy;
+    }
 }

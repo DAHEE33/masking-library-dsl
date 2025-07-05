@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("org.owasp.dependencycheck") version "8.4.0"
 }
 
 group = "com.masking"
@@ -10,6 +11,10 @@ java {
     // Java 8 호환
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
 }
 
 repositories {
@@ -36,8 +41,86 @@ dependencies {
     implementation("com.icegreen:greenmail:1.6.3")
     testImplementation("com.icegreen:greenmail:1.6.3")
 
+    testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
+
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+// OWASP Dependency Check 설정
+dependencyCheck {
+    failBuildOnCVSS = 7.0f
+    formats = listOf("HTML", "JSON")
+    suppressionFile = "config/dependency-check-suppressions.xml"
+}
+
+// Javadoc 설정
+tasks.javadoc {
+    options {
+        (this as StandardJavadocDocletOptions).apply {
+            encoding = "UTF-8"
+            charSet = "UTF-8"
+            docEncoding = "UTF-8"
+            author()
+            version()
+            title = "Masking Library API Documentation"
+            windowTitle = "Masking Library API"
+            docTitle = "<h1>Masking Library API Documentation</h1>"
+            bottom = "Copyright &copy; 2024"
+            links("https://docs.oracle.com/javase/8/docs/api/")
+        }
+    }
+}
+
+// Javadoc JAR 생성
+val javadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+    from(tasks.javadoc)
+}
+
+// Sources JAR 생성
+val sourcesJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
+// Maven Publish 설정
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            
+            artifact(javadocJar)
+            artifact(sourcesJar)
+            
+            pom {
+                name.set("Masking Library")
+                description.set("Action-based data protection library for masking, tokenization, encryption, and auditing")
+                url.set("https://github.com/yourusername/masking-library")
+                
+                licenses {
+                    license {
+                        name.set("Apache License 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0")
+                    }
+                }
+                
+                developers {
+                    developer {
+                        id.set("yourusername")
+                        name.set("Your Name")
+                        email.set("your.email@example.com")
+                    }
+                }
+                
+                scm {
+                    connection.set("scm:git:git://github.com/yourusername/masking-library.git")
+                    developerConnection.set("scm:git:ssh://github.com:yourusername/masking-library.git")
+                    url.set("https://github.com/yourusername/masking-library")
+                }
+            }
+        }
+    }
 }

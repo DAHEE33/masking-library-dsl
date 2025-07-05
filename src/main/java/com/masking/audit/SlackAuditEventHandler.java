@@ -29,10 +29,12 @@ public class SlackAuditEventHandler implements AuditEventHandler {
     public SlackAuditEventHandler() throws IOException {
         TemplateConfig.init();
         this.tpl = TemplateConfig.getSlackConfig();
+        System.out.println("[SLACK DEBUG] SlackAuditEventHandler 생성됨. webhook_url=" + this.tpl.webhook_url);
     }
 
     @Override
     public void handle(String field, String before, String after) {
+        System.out.println("[SLACK DEBUG] handle() 호출됨. field=" + field + ", before=" + before + ", after=" + after);
         HttpURLConnection conn = null;
         try {
             // 플레이스홀더 치환
@@ -51,6 +53,10 @@ public class SlackAuditEventHandler implements AuditEventHandler {
 
             String json = new ObjectMapper().writeValueAsString(payload);
 
+            // 디버그 출력
+            System.out.println("[SLACK DEBUG] Webhook URL: " + tpl.webhook_url);
+            System.out.println("[SLACK DEBUG] Payload: " + json);
+
             // HTTP 연결
             URL url = new URL(tpl.webhook_url);
             conn = (HttpURLConnection) url.openConnection();
@@ -65,6 +71,7 @@ public class SlackAuditEventHandler implements AuditEventHandler {
 
             // 응답 확인
             int status = conn.getResponseCode();
+            System.out.println("[SLACK DEBUG] Response status: " + status);
             if (status >= 400) {
                 String error = readStream(conn.getErrorStream());
                 throw new IOException("Slack Webhook returned HTTP " + status + ": " + error);

@@ -24,5 +24,12 @@ public class TokenizeAction implements Action {
             record.put(field, strategy.tokenize(value));
         }
     }
-
+    
+    public String getField() {
+        return field;
+    }
+    
+    public TokenizationStrategy getStrategy() {
+        return strategy;
+    }
 }
