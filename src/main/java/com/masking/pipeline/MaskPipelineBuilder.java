@@ -41,6 +41,27 @@ public class MaskPipelineBuilder {
         return this;
     }
 
+    // 새로운 메서드들: before/after 추적이 가능한 복합 액션들
+    public MaskPipelineBuilder maskWithAudit(String field, MaskStrategy strategy, AuditEventHandler handler) {
+        actions.add(CompositeAuditAction.of(field, handler, MaskAction.of(field, strategy)));
+        return this;
+    }
+
+    public MaskPipelineBuilder tokenizeWithAudit(String field, TokenizationStrategy strategy, AuditEventHandler handler) {
+        actions.add(CompositeAuditAction.of(field, handler, TokenizeAction.of(field, strategy)));
+        return this;
+    }
+
+    public MaskPipelineBuilder encryptAesWithAudit(String field, byte[] key, AuditEventHandler handler) {
+        actions.add(CompositeAuditAction.of(field, handler, EncryptAction.of(field, AesEncryptionStrategy.of(key))));
+        return this;
+    }
+
+    public MaskPipelineBuilder encryptRsaWithAudit(String field, PublicKey publicKey, AuditEventHandler handler) {
+        actions.add(CompositeAuditAction.of(field, handler, EncryptAction.of(field, RsaEncryptionStrategy.of(publicKey))));
+        return this;
+    }
+
     public MaskPipeline build() {
         return MaskPipeline.of(Actions.of(actions.toArray(new Action[0])));
     }
