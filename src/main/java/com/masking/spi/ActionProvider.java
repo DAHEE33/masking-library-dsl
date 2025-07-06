@@ -19,7 +19,7 @@ import java.util.Map;
  *     }
  *     
  *     @Override
- *     public Action createAction(Map<String, Object> config) {
+ *     public Action createAction(Map&lt;String, Object&gt; config) {
  *         return new CustomAction(config);
  *     }
  * }
