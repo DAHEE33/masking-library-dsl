@@ -119,16 +119,16 @@ publishing {
                 
                 developers {
                     developer {
-                        id.set("yourusername")
-                        name.set("Your Name")
-                        email.set("your.email@example.com")
+                        id.set("DAHEE33")
+                        name.set("KDH")
+                        email.set("todayda1006@gmail.com")
                     }
                 }
                 
                 scm {
-                    connection.set("scm:git:git://github.com/yourusername/masking-library.git")
-                    developerConnection.set("scm:git:ssh://github.com:yourusername/masking-library.git")
-                    url.set("https://github.com/yourusername/masking-library")
+                    connection.set("scm:git:git://github.com/DAHEE33/masking-library-dsl.git")
+                    developerConnection.set("scm:git:ssh://github.com:DAHEE33/masking-library-dsl.git")
+                    url.set("https://github.com/DAHEE33/masking-library-dsl")
                 }
             }
         }
@@ -139,8 +139,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/DAHEE33/masking-library-dsl")
             credentials {
-                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
+                username = System.getenv("GITHUB_ACTOR") ?: "DAHEE33"
+                password = System.getenv("GITHUB_TOKEN") 
             }
         }
     }
