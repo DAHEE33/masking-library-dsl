@@ -62,7 +62,6 @@ tasks.test {
 dependencyCheck {
     failBuildOnCVSS = 7.0f
     formats = listOf("HTML", "JSON")
-    suppressionFile = "config/dependency-check-suppressions.xml"
 }
 
 // Javadoc 설정
