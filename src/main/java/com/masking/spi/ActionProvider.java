@@ -68,6 +68,6 @@ public interface ActionProvider {
      * @return 지원하는 설정 키들의 Set
      */
     default java.util.Set<String> getSupportedConfigKeys() {
-        return java.util.Set.of();
+        return java.util.Collections.emptySet();
     }
 } 
