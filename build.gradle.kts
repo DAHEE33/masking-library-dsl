@@ -106,9 +106,9 @@ publishing {
             artifact(sourcesJar)
             
             pom {
-                name.set("Masking Library")
+                name.set("masking-library-dsl")
                 description.set("Action-based data protection library for masking, tokenization, encryption, and auditing")
-                url.set("https://github.com/yourusername/masking-library")
+                url.set("https://github.com/DAHEE33/masking-library-dsl")
                 
                 licenses {
                     license {
@@ -137,7 +137,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/yourusername/masking-library")
+            url = uri("https://maven.pkg.github.com/DAHEE33/masking-library-dsl")
             credentials {
                 username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
                 password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
