@@ -30,12 +30,14 @@ dependencies {
     // SLF4J + Jackson + JUnit
     implementation("org.slf4j:slf4j-api:1.7.36")
     implementation("org.slf4j:slf4j-simple:1.7.36")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.4")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.4")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.3")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.15.3")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.3")
+    implementation("org.yaml:snakeyaml:2.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 
     // H2 데이터베이스 (in-memory)
-    implementation("com.h2database:h2:2.1.214")
+    implementation("com.h2database:h2:2.2.224")
     // 간단한 DataSource 풀 (선택)
     implementation("com.zaxxer:HikariCP:3.4.5")
 
