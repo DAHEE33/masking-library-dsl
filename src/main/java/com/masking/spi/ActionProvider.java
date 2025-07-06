@@ -39,14 +39,12 @@ public interface ActionProvider {
     
     /**
      * 이 Action의 고유한 이름을 반환합니다.
-     * 
      * @return Action 이름 (소문자, 하이픈으로 구분 권장)
      */
     String getActionName();
     
     /**
      * 설정을 기반으로 Action 인스턴스를 생성합니다.
-     * 
      * @param config Action 생성에 필요한 설정 정보
      * @return 생성된 Action 인스턴스
      * @throws IllegalArgumentException 설정이 유효하지 않은 경우
@@ -55,7 +53,6 @@ public interface ActionProvider {
     
     /**
      * 이 Action에 대한 설명을 반환합니다.
-     * 
      * @return Action 설명
      */
     default String getDescription() {
@@ -64,7 +61,6 @@ public interface ActionProvider {
     
     /**
      * 이 Action이 지원하는 설정 키들을 반환합니다.
-     * 
      * @return 지원하는 설정 키들의 Set
      */
     default java.util.Set<String> getSupportedConfigKeys() {

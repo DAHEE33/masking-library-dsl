@@ -20,10 +20,21 @@ public class CompositeAuditAction implements Action {
         this.targetAction = targetAction;
     }
 
+    /**
+     * CompositeAuditAction 인스턴스를 생성합니다.
+     * @param field 감사 대상 필드명
+     * @param handler 감사 이벤트 핸들러
+     * @param targetAction 실행할 액션
+     * @return CompositeAuditAction 인스턴스
+     */
     public static CompositeAuditAction of(String field, AuditEventHandler handler, Action targetAction) {
         return new CompositeAuditAction(field, handler, targetAction);
     }
 
+    /**
+     * 레코드에 복합 감사 처리를 적용합니다.
+     * @param record 처리할 레코드
+     */
     @Override
     public void apply(Map<String, String> record) {
         String before = record.get(field);

@@ -25,6 +25,7 @@ public class SlackAuditEventHandler implements AuditEventHandler {
 
     /**
      * 설정파일에서 Slack 템플릿을 로드하여 핸들러를 초기화합니다.
+     * @throws IOException 설정 파일 로드 실패 시
      */
     public SlackAuditEventHandler() throws IOException {
         TemplateConfig.init();
@@ -32,6 +33,12 @@ public class SlackAuditEventHandler implements AuditEventHandler {
         System.out.println("[SLACK DEBUG] SlackAuditEventHandler 생성됨. webhook_url=" + this.tpl.webhook_url);
     }
 
+    /**
+     * Slack Webhook으로 감사 메시지를 전송합니다.
+     * @param field 감사 대상 필드명
+     * @param before 변경 전 값
+     * @param after 변경 후 값
+     */
     @Override
     public void handle(String field, String before, String after) {
         System.out.println("[SLACK DEBUG] handle() 호출됨. field=" + field + ", before=" + before + ", after=" + after);

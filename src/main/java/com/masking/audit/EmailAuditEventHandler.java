@@ -18,6 +18,9 @@ public class EmailAuditEventHandler implements AuditEventHandler {
     private final Session session;
     private final EmailConfig emailCfg;
 
+    /**
+     * 기본 이메일 설정으로 EmailAuditEventHandler를 생성합니다.
+     */
     public EmailAuditEventHandler() {
         // 1) 템플릿 로드 및 email 설정 추출
         TemplateConfig.init();
@@ -60,6 +63,12 @@ public class EmailAuditEventHandler implements AuditEventHandler {
         }
     }
 
+    /**
+     * 이메일로 감사 메시지를 전송합니다.
+     * @param field 감사 대상 필드명
+     * @param before 변경 전 값
+     * @param after 변경 후 값
+     */
     @Override
     public void handle(String field, String before, String after) {
         try {

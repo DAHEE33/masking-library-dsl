@@ -51,7 +51,6 @@ public class ActionRegistry {
     
     /**
      * 지정된 이름의 Action을 생성합니다.
-     * 
      * @param actionName Action 이름
      * @param config Action 생성에 필요한 설정
      * @return 생성된 Action
@@ -78,7 +77,6 @@ public class ActionRegistry {
     
     /**
      * 사용 가능한 Action 이름들을 반환합니다.
-     * 
      * @return Action 이름들의 Set
      */
     public static Set<String> getAvailableActionNames() {
@@ -87,7 +85,6 @@ public class ActionRegistry {
     
     /**
      * 지정된 이름의 Action이 등록되어 있는지 확인합니다.
-     * 
      * @param actionName 확인할 Action 이름
      * @return 등록 여부
      */
@@ -97,7 +94,6 @@ public class ActionRegistry {
     
     /**
      * 지정된 이름의 ActionProvider를 반환합니다.
-     * 
      * @param actionName Action 이름
      * @return ActionProvider (없으면 null)
      */
@@ -107,7 +103,6 @@ public class ActionRegistry {
     
     /**
      * 모든 등록된 ActionProvider들의 정보를 반환합니다.
-     * 
      * @return ActionProvider 정보 Map
      */
     public static Map<String, String> getProviderInfo() {
