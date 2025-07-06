@@ -1,5 +1,5 @@
 slack:
-  webhook_url: "https://hooks.slack.com/services/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"
+  webhook_url: "https://hooks.slack.com/services/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"
   message: |
     🔔 *${field}* 필드가 변경되었습니다.
     • 이전값: `${before}`
