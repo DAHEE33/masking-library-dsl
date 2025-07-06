@@ -75,14 +75,29 @@ public class EmailAuditEventHandler implements AuditEventHandler {
             // 메일 메시지 생성 및 설정
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(emailCfg.from));
-            msg.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(emailCfg.to));
-            msg.setSubject("[AUDIT] field=" + field);
+            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailCfg.to));
 
-            String body = new StringBuilder()
-                    .append("before: ").append(before).append("\n")
-                    .append("after: ").append(after)
-                    .toString();
+            // yml 템플릿에서 subject/body 읽기 (없으면 기본값)
+            String subjectTpl = null;
+            String bodyTpl = null;
+            try {
+                // AuditTemplates에서 email 템플릿 읽기
+                AuditTemplates emailTemplates = TemplateConfig.getTemplates();
+                if (emailTemplates != null && emailTemplates.email != null) {
+                    subjectTpl = emailTemplates.email.subject;
+                    bodyTpl = emailTemplates.email.body;
+                }
+            } catch (Exception ignored) {}
+            if (subjectTpl == null) subjectTpl = "[AUDIT] field=${field}";
+            if (bodyTpl == null) bodyTpl = "before: ${before}\nafter: ${after}";
+
+            // 플레이스홀더 치환
+            String subject = subjectTpl.replace("${field}", field);
+            String body = bodyTpl.replace("${field}", field)
+                                 .replace("${before}", before)
+                                 .replace("${after}", after);
+
+            msg.setSubject(subject);
             msg.setText(body);
 
             // 메일 전송

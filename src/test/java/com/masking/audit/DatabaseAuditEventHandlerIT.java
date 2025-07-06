@@ -30,7 +30,6 @@ class DatabaseAuditEventHandlerIT {
     @Test
     void handle_shouldInsertRow() throws Exception {
         DatabaseAuditEventHandler handler = new DatabaseAuditEventHandler(ds);
-        // handler.handle 인자도 정상적인 리터럴로 변경
         handler.handle("email", "foo@bar.com", "f**@bar.com");
 
         try (Connection c = ds.getConnection();
@@ -40,7 +39,10 @@ class DatabaseAuditEventHandlerIT {
 
             assertTrue(rs.next());
             assertEquals("email",         rs.getString("field"));
-            assertEquals("foo@bar.com",   rs.getString("before_val"));
+            // 템플릿 메시지 검증
+            assertTrue(rs.getString("before_val").contains("foo@bar.com"));
+            assertTrue(rs.getString("before_val").contains("email"));
+            assertTrue(rs.getString("before_val").contains("변경 전"));
             assertEquals("f**@bar.com",   rs.getString("after_val"));
             assertFalse(rs.next());
         }

@@ -6,4 +6,5 @@ public class DatabaseConfig {
     public String password;
     public String table;
     public String driver;
+    public String message; // DB 감사 메시지 템플릿
 } 

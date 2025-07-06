@@ -10,13 +10,19 @@ slack:
 
 # 개발/테스트 환경용 (GreenMail)
 email:
-  smtpHost:  "localhost"
-  smtpPort:  3025
-  from:      "from@test.com"
-  to:        "to@test.com"
-  username:  ""       # 인증 없이
-  password:  ""
-  starttls:  false
+  smtpHost:   "${EMAIL_SMTP_HOST}"
+  smtpPort:   "${EMAIL_SMTP_PORT}"
+  from:       "${EMAIL_FROM}"
+  to:         "${EMAIL_TO}"
+  username:   "${EMAIL_USERNAME}"
+  password:   "${EMAIL_PASSWORD}"
+  starttls:   true
+  subject:    "[ALERT] ${field} 변경"
+  body: |
+    [감사 알림]
+    필드: ${field}
+    변경 전: ${before}
+    변경 후: ${after}
 
 # 운영 환경용 - Gmail 예시 (환경변수 사용)
 # 실제 사용 시 아래 주석을 해제하고 환경변수 설정
@@ -46,3 +52,8 @@ database:
   password: ""
   table: "audit_logs"
   driver: "org.h2.Driver"
+  message: |
+    [DB 감사]
+    필드: ${field}
+    변경 전: ${before}
+    변경 후: ${after}

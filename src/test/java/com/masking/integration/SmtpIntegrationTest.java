@@ -51,23 +51,13 @@ class SmtpIntegrationTest {
 
     @Test
     void shouldSendEmailWithCustomConfig() {
-        // 커스텀 이메일 설정
-        EmailConfig customConfig = new EmailConfig();
-        customConfig.smtpHost = System.getenv("EMAIL_SMTP_HOST");
-        customConfig.smtpPort = Integer.parseInt(System.getenv("EMAIL_SMTP_PORT"));
-        customConfig.from = System.getenv("EMAIL_FROM");
-        customConfig.to = System.getenv("EMAIL_TO");
-        customConfig.username = System.getenv("EMAIL_USERNAME");
-        customConfig.password = System.getenv("EMAIL_PASSWORD");
-        customConfig.starttls = true;
-
-        // 커스텀 설정으로 이메일 핸들러 생성
-        EmailAuditEventHandler emailHandler = new EmailAuditEventHandler(customConfig);
+        // yml(email) 설정을 자동으로 읽어오는 기본 생성자 사용
+        EmailAuditEventHandler emailHandler = new EmailAuditEventHandler();
 
         // 실제 SMTP로 이메일 발송 테스트
         assertDoesNotThrow(() -> {
             emailHandler.handle("ssn", "123-45-6789", "***-**-6789");
-            System.out.println("[TEST] 커스텀 설정으로 이메일 발송 완료");
+            System.out.println("[TEST] yml 기반 설정으로 이메일 발송 완료");
         });
     }
 } 
