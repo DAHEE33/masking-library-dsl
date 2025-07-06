@@ -16,6 +16,7 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import javax.mail.internet.MimeMessage;
 import javax.sql.DataSource;
@@ -33,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * FullPipelineIntegrationTest:
  * - H2, GreenMail, WireMock(Slack)을 함께 띄워, 전체 파이프라인을 검증합니다.
  */
+@EnabledIfEnvironmentVariable(named = "RUN_INTEGRATION_TESTS", matches = "true")
 class FullPipelineIntegrationTest {
     private static WireMockServer wireMock;
     private static GreenMail greenMail;

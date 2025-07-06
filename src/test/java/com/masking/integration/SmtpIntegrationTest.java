@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  * - EMAIL_USERNAME: SMTP 인증 사용자명
  * - EMAIL_PASSWORD: SMTP 인증 비밀번호
  */
-@EnabledIfEnvironmentVariable(named = "EMAIL_SMTP_HOST", matches = ".+")
+@EnabledIfEnvironmentVariable(named = "RUN_INTEGRATION_TESTS", matches = "true")
 class SmtpIntegrationTest {
 
     @BeforeAll

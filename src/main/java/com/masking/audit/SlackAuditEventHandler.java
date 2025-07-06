@@ -15,13 +15,11 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 /**
  * Slack Incoming Webhook을 통해 감사 메시지를 전송합니다.
  * audit-templates.yml 설정을 로드하여 webhook URL, 채널, 봇 이름, 이모지, 아이콘 URL을 사용합니다.
  */
-@EnabledIfEnvironmentVariable(named = "RUN_INTEGRATION_TESTS", matches = "true")
 public class SlackAuditEventHandler implements AuditEventHandler {
     private final AuditTemplates.Slack tpl;
 
