@@ -48,11 +48,7 @@ public class PerformanceTest {
         long startTime = System.nanoTime();
         
         for (Map<String, String> record : testData) {
-            try {
-                maskAction.apply(record);
-            } catch (IOException e) {
-                fail("Action 실행 중 오류: " + e.getMessage());
-            }
+            maskAction.apply(record);
         }
         
         long endTime = System.nanoTime();
@@ -104,11 +100,7 @@ public class PerformanceTest {
         long startTime = System.nanoTime();
         
         for (Map<String, String> record : testData) {
-            try {
-                pipeline.apply(record);
-            } catch (IOException e) {
-                fail("파이프라인 실행 중 오류: " + e.getMessage());
-            }
+            pipeline.apply(record);
         }
         
         long endTime = System.nanoTime();
@@ -137,11 +129,7 @@ public class PerformanceTest {
             RegexMaskStrategy.of("(?<=.).(?=[^@]+@)", '*'));
         
         for (Map<String, String> record : largeData) {
-            try {
-                maskAction.apply(record);
-            } catch (IOException e) {
-                fail("메모리 테스트 중 오류: " + e.getMessage());
-            }
+            maskAction.apply(record);
         }
         
         // GC 실행 후 메모리 측정
@@ -178,11 +166,7 @@ public class PerformanceTest {
                                    (threadIndex + 1) * recordsPerThread);
                 
                 for (Map<String, String> record : threadData) {
-                    try {
-                        maskAction.apply(record);
-                    } catch (IOException e) {
-                        throw new RuntimeException("스레드 실행 중 오류", e);
-                    }
+                    maskAction.apply(record);
                 }
             });
             threads[i].start();

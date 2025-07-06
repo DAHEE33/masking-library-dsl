@@ -88,9 +88,8 @@ class FullPipelineIntegrationTest {
         System.out.println("GreenMail running: " + greenMail.isRunning());
         System.out.println("GreenMail SMTP port: " + greenMail.getSmtp().getPort());
         System.out.println("===============================");
-        // 실제 Slack Webhook 주소로 강제 세팅
-        String slackStubUrl = "https://hooks.slack.com/services/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";
-        TemplateConfig.getTemplates().slack.webhook_url = slackStubUrl;
+        // YAML에서 설정된 Slack webhook URL 사용
+        System.out.println("[TEST] Using Slack webhook from YAML: " + TemplateConfig.getTemplates().slack.webhook_url);
         SlackAuditEventHandler slackHandler = null;
         try {
             slackHandler = new SlackAuditEventHandler();

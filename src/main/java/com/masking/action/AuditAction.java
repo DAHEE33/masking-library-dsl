@@ -25,14 +25,18 @@ public class AuditAction implements Action {
     }
 
     @Override
-    public void apply(Map<String, String> record) throws IOException {
+    public void apply(Map<String, String> record) {
         String before = record.get(field);
-        if (trackAfter) {
-            // 다음 액션 실행 후 after 값을 추적하기 위해 래퍼 사용
-            // 이는 복잡하므로 단순히 before만 기록하는 것이 더 실용적
-            handler.handle(field, before, null);
-        } else {
-            handler.handle(field, before, null);
+        try {
+            if (trackAfter) {
+                // 다음 액션 실행 후 after 값을 추적하기 위해 래퍼 사용
+                // 이는 복잡하므로 단순히 before만 기록하는 것이 더 실용적
+                handler.handle(field, before, null);
+            } else {
+                handler.handle(field, before, null);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Audit handler failed", e);
         }
     }
     

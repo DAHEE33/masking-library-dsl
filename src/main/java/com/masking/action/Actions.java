@@ -1,6 +1,6 @@
 package com.masking.action;
 
-import java.io.IOException;
+
 import java.util.*;
 import java.util.Map;
 
@@ -20,12 +20,6 @@ public class Actions implements Action {
 
     @Override
     public void apply(Map<String, String> record) {
-        actions.forEach(a -> {
-            try {
-                a.apply(record);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        actions.forEach(a -> a.apply(record));
     }
 }

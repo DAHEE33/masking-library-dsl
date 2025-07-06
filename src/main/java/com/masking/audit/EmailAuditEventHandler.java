@@ -22,31 +22,48 @@ public class EmailAuditEventHandler implements AuditEventHandler {
         // 1) 템플릿 로드 및 email 설정 추출
         TemplateConfig.init();
         this.emailCfg = TemplateConfig.getEmailConfig();
+        this.session = createSession(this.emailCfg);
+    }
 
-        // 2) SMTP 프로퍼티 구성
+    /**
+     * 커스텀 이메일 설정으로 EmailAuditEventHandler를 생성합니다.
+     * @param customConfig 커스텀 이메일 설정
+     */
+    public EmailAuditEventHandler(EmailConfig customConfig) {
+        this.emailCfg = customConfig;
+        this.session = createSession(this.emailCfg);
+    }
+
+    /**
+     * 이메일 설정으로 SMTP 세션을 생성합니다.
+     * @param config 이메일 설정
+     * @return SMTP 세션
+     */
+    private Session createSession(EmailConfig config) {
+        // SMTP 프로퍼티 구성
         Properties props = new Properties();
-        props.put("mail.smtp.host",       emailCfg.smtpHost);
-        props.put("mail.smtp.port",       String.valueOf(emailCfg.smtpPort));
-        props.put("mail.smtp.auth",       String.valueOf(emailCfg.username != null && !emailCfg.username.isEmpty()));
-        props.put("mail.smtp.starttls.enable", String.valueOf(emailCfg.starttls));
+        props.put("mail.smtp.host",       config.smtpHost);
+        props.put("mail.smtp.port",       String.valueOf(config.smtpPort));
+        props.put("mail.smtp.auth",       String.valueOf(config.username != null && !config.username.isEmpty()));
+        props.put("mail.smtp.starttls.enable", String.valueOf(config.starttls));
 
-        // 3) 인증 유무에 따른 세션 생성
-        if (emailCfg.username != null && !emailCfg.username.isEmpty()) {
-            this.session = Session.getInstance(props, new Authenticator() {
+        // 인증 유무에 따른 세션 생성
+        if (config.username != null && !config.username.isEmpty()) {
+            return Session.getInstance(props, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(emailCfg.username, emailCfg.password);
+                    return new PasswordAuthentication(config.username, config.password);
                 }
             });
         } else {
-            this.session = Session.getInstance(props);
+            return Session.getInstance(props);
         }
     }
 
     @Override
     public void handle(String field, String before, String after) {
         try {
-            // 4) 메일 메시지 생성 및 설정
+            // 메일 메시지 생성 및 설정
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(emailCfg.from));
             msg.setRecipients(Message.RecipientType.TO,
@@ -59,7 +76,7 @@ public class EmailAuditEventHandler implements AuditEventHandler {
                     .toString();
             msg.setText(body);
 
-            // 5) 메일 전송
+            // 메일 전송
             Transport.send(msg);
         } catch (MessagingException e) {
             throw new RuntimeException("Email 감사 전송 실패", e);

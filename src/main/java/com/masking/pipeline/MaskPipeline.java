@@ -17,7 +17,7 @@ public class MaskPipeline implements Action {
     }
 
     @Override
-    public void apply(Map<String, String> record) throws IOException {
+    public void apply(Map<String, String> record) {
         pipeline.apply(record);
     }
 }

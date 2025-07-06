@@ -1,11 +1,16 @@
 plugins {
     `java-library`
+    `application`
     `maven-publish`
     id("org.owasp.dependencycheck") version "8.4.0"
 }
 
 group = "com.masking"
 version = "0.1.0"
+
+application {
+    mainClass.set("com.masking.demo.Main")
+}
 
 java {
     // Java 8 호환
@@ -36,6 +41,10 @@ dependencies {
 
     // JavaMail (이메일 전송)
     implementation("com.sun.mail:javax.mail:1.6.2")
+
+    // 프로덕션 모니터링 (Micrometer)
+    implementation("io.micrometer:micrometer-core:1.10.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.10.2")
 
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.35.0")
     implementation("com.icegreen:greenmail:1.6.3")
@@ -86,7 +95,7 @@ val sourcesJar by tasks.registering(Jar::class) {
     from(sourceSets.main.get().allSource)
 }
 
-// Maven Publish 설정
+// Maven Publish 설정 (GitHub Packages)
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -120,6 +129,17 @@ publishing {
                     developerConnection.set("scm:git:ssh://github.com:yourusername/masking-library.git")
                     url.set("https://github.com/yourusername/masking-library")
                 }
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/yourusername/masking-library")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")
             }
         }
     }

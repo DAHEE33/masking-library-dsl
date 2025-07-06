@@ -1,72 +1,53 @@
 # 이메일 설정 가이드
 
-## 개요
+## 1. 개발/테스트 환경 (GreenMail)
 
-실제 운영 환경에서 Gmail, Naver 등의 SMTP 서비스를 사용하는 방법을 안내합니다.
+### 설정
+```yaml
+# audit-templates.yml
+email:
+  smtpHost:  "localhost"
+  smtpPort:  3025
+  from:      "from@test.com"
+  to:        "to@test.com"
+  username:  ""
+  password:  ""
+  starttls:  false
+```
 
-## 🔐 보안 원칙
-
-**절대 하드코딩하지 마세요!**
-- ❌ `password: "my-password"`
-- ✅ `password: "${EMAIL_PASSWORD}"`
-
-## 📧 Gmail 설정
-
-### 1. Gmail 앱 비밀번호 생성
-1. Google 계정 설정 → 보안
-2. 2단계 인증 활성화
-3. 앱 비밀번호 생성 (16자리)
-4. 생성된 앱 비밀번호를 환경변수로 설정
-
-### 2. 환경변수 설정
+### 테스트 실행
 ```bash
-# Linux/Mac
+# GreenMail을 사용한 테스트 (기본)
+./gradlew test --tests FullPipelineIntegrationTest
+```
+
+## 2. 운영 환경 (실제 SMTP)
+
+### 환경변수 설정
+```bash
+# Gmail 예시
+export EMAIL_SMTP_HOST="smtp.gmail.com"
+export EMAIL_SMTP_PORT="587"
 export EMAIL_FROM="alerts@mycompany.com"
 export EMAIL_TO="ops@mycompany.com"
 export EMAIL_USERNAME="alerts@mycompany.com"
-export EMAIL_PASSWORD="your-16-digit-app-password"
+export EMAIL_PASSWORD="your-app-password"
 
-# Windows
-set EMAIL_FROM=alerts@mycompany.com
-set EMAIL_TO=ops@mycompany.com
-set EMAIL_USERNAME=alerts@mycompany.com
-set EMAIL_PASSWORD=your-16-digit-app-password
-```
-
-### 3. 설정 파일 활성화
-`audit-templates.yml`에서 Gmail 설정 주석 해제:
-```yaml
-email:
-  smtpHost:   "smtp.gmail.com"
-  smtpPort:   587
-  from:       "${EMAIL_FROM}"
-  to:         "${EMAIL_TO}"
-  username:   "${EMAIL_USERNAME}"
-  password:   "${EMAIL_PASSWORD}"
-  starttls:   true
-```
-
-## 📧 Naver 설정
-
-### 1. Naver 메일 설정
-1. Naver 계정 → 메일 설정
-2. POP3/SMTP 사용 설정
-3. 보안 메일 설정에서 SMTP 사용 허용
-
-### 2. 환경변수 설정
-```bash
+# Naver 예시
+export EMAIL_SMTP_HOST="smtp.naver.com"
+export EMAIL_SMTP_PORT="587"
 export EMAIL_FROM="alerts@mycompany.com"
 export EMAIL_TO="ops@mycompany.com"
 export EMAIL_USERNAME="your-naver-id"
 export EMAIL_PASSWORD="your-naver-password"
 ```
 
-### 3. 설정 파일 활성화
-`audit-templates.yml`에서 Naver 설정 주석 해제:
+### YAML 설정
 ```yaml
+# audit-templates.yml
 email:
-  smtpHost:   "smtp.naver.com"
-  smtpPort:   587
+  smtpHost:   "${EMAIL_SMTP_HOST}"
+  smtpPort:   "${EMAIL_SMTP_PORT}"
   from:       "${EMAIL_FROM}"
   to:         "${EMAIL_TO}"
   username:   "${EMAIL_USERNAME}"
@@ -74,111 +55,56 @@ email:
   starttls:   true
 ```
 
-## 🐳 Docker 환경에서 사용
-
-### Docker Compose 예시
-```yaml
-version: '3.8'
-services:
-  masking-app:
-    image: masking-library:latest
-    environment:
-      - EMAIL_FROM=alerts@mycompany.com
-      - EMAIL_TO=ops@mycompany.com
-      - EMAIL_USERNAME=alerts@mycompany.com
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
-    env_file:
-      - .env
-```
-
-### .env 파일 (Git에 커밋하지 않음)
-```env
-EMAIL_PASSWORD=your-secure-password
-```
-
-## ☁️ 클라우드 환경에서 사용
-
-### AWS ECS/Fargate
-```json
-{
-  "environment": [
-    {
-      "name": "EMAIL_PASSWORD",
-      "value": "arn:aws:secretsmanager:region:account:secret:email-password"
-    }
-  ]
-}
-```
-
-### Kubernetes
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: email-secret
-type: Opaque
-data:
-  email-password: <base64-encoded-password>
----
-apiVersion: apps/v1
-kind: Deployment
-spec:
-  template:
-    spec:
-      containers:
-      - name: masking-app
-        env:
-        - name: EMAIL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: email-secret
-              key: email-password
-```
-
-## 🔍 테스트 방법
-
-### 1. 환경변수 확인
+### 실제 SMTP 테스트 실행
 ```bash
-echo $EMAIL_USERNAME
-echo $EMAIL_PASSWORD
-```
-
-### 2. SMTP 연결 테스트
-```bash
-# 테스트 실행
+# 환경변수 설정 후 테스트 실행
 ./gradlew test --tests SmtpIntegrationTest
 ```
 
-### 3. 실제 이메일 전송 테스트
-```java
-// Demo.java에서 테스트
-EmailAuditEventHandler emailHandler = new EmailAuditEventHandler();
-emailHandler.handle("test", "original", "masked");
+## 3. Gmail 설정 (앱 비밀번호)
+
+### 1. 2단계 인증 활성화
+1. Google 계정 설정 → 보안
+2. 2단계 인증 활성화
+
+### 2. 앱 비밀번호 생성
+1. Google 계정 설정 → 보안 → 앱 비밀번호
+2. "앱 선택" → "기타"
+3. 앱 이름 입력 (예: "Masking Library")
+4. 생성된 16자리 비밀번호 사용
+
+### 3. 환경변수 설정
+```bash
+export EMAIL_USERNAME="your-email@gmail.com"
+export EMAIL_PASSWORD="your-16-digit-app-password"
 ```
 
-## 🚨 주의사항
+## 4. 테스트 결과 확인
 
-1. **환경변수 파일(.env)을 Git에 커밋하지 마세요**
-2. **CI/CD에서는 시크릿 관리 시스템 사용**
-3. **정기적으로 비밀번호 변경**
-4. **로그에 비밀번호가 노출되지 않도록 주의**
+### 성공 시
+```
+[TEST] 이메일 발송 완료
+[TEST] 커스텀 설정으로 이메일 발송 완료
+```
 
-## 📋 체크리스트
+### 실패 시
+- 환경변수 확인
+- SMTP 서버 설정 확인
+- 방화벽/네트워크 확인
+- 앱 비밀번호 확인 (Gmail)
 
-- [ ] 2단계 인증 활성화 (Gmail)
-- [ ] 앱 비밀번호 생성 (Gmail)
-- [ ] SMTP 사용 허용 (Naver)
-- [ ] 환경변수 설정
-- [ ] .env 파일을 .gitignore에 추가
-- [ ] SMTP 연결 테스트
-- [ ] 실제 이메일 전송 테스트
+## 5. 운영 환경 배포 시 주의사항
 
-## 🔧 문제 해결
+### 보안
+- 환경변수는 절대 코드에 하드코딩하지 않음
+- `.env` 파일은 `.gitignore`에 포함
+- 앱 비밀번호는 정기적으로 갱신
 
-### Gmail 오류
-- **535 Authentication failed**: 앱 비밀번호 확인
-- **550 Relaying not allowed**: 발신자 이메일 주소 확인
+### 모니터링
+- 이메일 발송 실패 시 알림 설정
+- 발송량 모니터링 (SMTP 서버 제한)
+- 스팸 필터링 고려
 
-### Naver 오류
-- **535 Authentication failed**: SMTP 사용 설정 확인
-- **550 Invalid sender**: 발신자 이메일 주소 확인 
+### 백업
+- 이메일 발송 실패 시 대체 알림 방법 준비
+- Slack, SMS 등 다중 채널 구성 

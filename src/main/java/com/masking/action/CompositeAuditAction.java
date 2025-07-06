@@ -25,7 +25,7 @@ public class CompositeAuditAction implements Action {
     }
 
     @Override
-    public void apply(Map<String, String> record) throws IOException {
+    public void apply(Map<String, String> record) {
         String before = record.get(field);
         
         // 타겟 액션 실행
@@ -35,6 +35,10 @@ public class CompositeAuditAction implements Action {
         String after = record.get(field);
         
         // 감사 로그 기록
-        handler.handle(field, before, after);
+        try {
+            handler.handle(field, before, after);
+        } catch (IOException e) {
+            throw new RuntimeException("Audit handler failed", e);
+        }
     }
 } 
