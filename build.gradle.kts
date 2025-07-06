@@ -37,7 +37,7 @@ dependencies {
     // H2 데이터베이스 (in-memory)
     implementation("com.h2database:h2:2.1.214")
     // 간단한 DataSource 풀 (선택)
-    implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("com.zaxxer:HikariCP:3.4.5")
 
     // JavaMail (이메일 전송)
     implementation("com.sun.mail:javax.mail:1.6.2")
