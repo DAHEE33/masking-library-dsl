@@ -13,12 +13,10 @@ import java.util.Map;
  * <pre>{@code
  * // 1. ActionProvider 구현
  * public class CustomActionProvider implements ActionProvider {
- *     @Override
  *     public String getActionName() {
  *         return "custom";
  *     }
  *     
- *     @Override
  *     public Action createAction(Map&lt;String, Object&gt; config) {
  *         return new CustomAction(config);
  *     }
