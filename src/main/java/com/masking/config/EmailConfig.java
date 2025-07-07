@@ -8,4 +8,6 @@ public class EmailConfig {
     public String username;
     public String password;
     public boolean starttls = true;
+    public String subject;   // ← 추가
+    public String body;
 }
