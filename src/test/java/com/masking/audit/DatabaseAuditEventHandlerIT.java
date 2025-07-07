@@ -40,9 +40,11 @@ class DatabaseAuditEventHandlerIT {
             assertTrue(rs.next());
             assertEquals("email",         rs.getString("field"));
             // 템플릿 메시지 검증
+            assertTrue(rs.getString("before_val").contains("[DB 감사]"));
+            assertTrue(rs.getString("before_val").contains("필드"));
+            assertTrue(rs.getString("before_val").contains("변경 전"));
             assertTrue(rs.getString("before_val").contains("foo@bar.com"));
             assertTrue(rs.getString("before_val").contains("email"));
-            assertTrue(rs.getString("before_val").contains("변경 전"));
             assertEquals("f**@bar.com",   rs.getString("after_val"));
             assertFalse(rs.next());
         }

@@ -1,0 +1,22 @@
+email:
+  smtpHost:   "localhost"
+  smtpPort:   3025
+  from:       "test@local"
+  to:         "test@local"
+  username:   ""
+  password:   ""
+  starttls:   false
+  subject:    "[AUDIT] field=${field}"
+  body:       "before: ${before}\nafter: ${after}"
+
+database:
+  url: "jdbc:h2:mem:auditdb"
+  username: "sa"
+  password: ""
+  table: "audit_log"
+  driver: "org.h2.Driver"
+  message: |
+    [DB 감사]
+    필드: ${field}
+    변경 전: ${before}
+    변경 후: ${after} 
