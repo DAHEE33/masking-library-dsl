@@ -128,6 +128,56 @@ database:
 
 ---
 
+## ⚙️ 환경변수(Secrets) 설정 및 CI/CD 연동
+
+### 1. 이메일/감사 설정 환경변수
+
+`audit-templates.yml`에서 아래와 같이 환경변수로 값을 지정하세요:
+
+```yaml
+email:
+  smtpHost:   "${EMAIL_SMTP_HOST}"
+  smtpPort:   "${EMAIL_SMTP_PORT}"
+  from:       "${EMAIL_FROM}"
+  to:         "${EMAIL_TO}"
+  username:   "${EMAIL_USERNAME}"
+  password:   "${EMAIL_PASSWORD}"
+  starttls:   true
+```
+
+### 2. GitHub Secrets 등록 예시
+
+GitHub 저장소 > Settings > Secrets and variables > Actions에서 아래와 같이 등록하세요:
+
+- `EMAIL_SMTP_HOST`
+- `EMAIL_SMTP_PORT`
+- `EMAIL_FROM`
+- `EMAIL_TO`
+- `EMAIL_USERNAME`
+- `EMAIL_PASSWORD`
+
+### 3. CI/CD 환경변수 주입 예시
+
+`.github/workflows/ci.yml`에서 아래처럼 환경변수를 주입합니다:
+
+```yaml
+env:
+  GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+  EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}
+  EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
+  EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+  EMAIL_TO: ${{ secrets.EMAIL_TO }}
+  EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+```
+
+### 4. 배포 시 주의사항
+
+- 이미 같은 버전이 업로드된 경우(409 Conflict),  
+  `build.gradle.kts`에서 버전을 올려서 재배포해야 합니다.
+
+---
+
 ## 4. 개발 환경 & 패키지 구조
 - **Java 8** 호환 (source/target 1.8)  
 - **Gradle** (Kotlin DSL)  
